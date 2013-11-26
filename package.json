@@ -1,0 +1,35 @@
+{
+  "name": "ftpsync",
+  "preferGlobal": true,
+  "version": "0.1.0",
+  "description": "Selective file syncronization over FTP",
+  "homepage": "http://github.com/evanplaice/node-ftpsync",
+  "author": {
+    "name": "Evan Plaice",
+    "email": "evanplaice@gmail.com",
+    "url": "https://plus.google.com/u/0/112882755236529658404/about"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/evanplaice/grunt-ftp-deploy/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "ftpsync.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/evanplaice/node-ftpsync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/evanplaice/node-ftpsync/issues"
+  },
+   "engines": {
+    "node" : ">=0.8.0"
+  },
+  "dependencies": {
+    "async": ">=0.2.9",
+    "jsftp": ">=1.1.1"
+  },
+  "repository" : { "type": "git", "url": "http://github.com/evanplaice/node-ftpsync.git" },
+  "keywords": [ "ftp", "client", "transfer","sync","synchronise"],
+}
