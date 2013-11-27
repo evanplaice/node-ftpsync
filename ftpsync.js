@@ -1,31 +1,30 @@
 // Design Notes
 // ----------------------------------------------------------------------------
-// Step 1 - collect:
-// In the first step the script accomplishes two tasks in parallel. Syncing the 
-// clocks and collecting the file lists of both the local and remote.
+// Step 1 - setup:
+// Calculate the local and remote timezone offsets to sync the clocks.
 //
-// Step 2 - consolidate:
-// In the next step the file lists are consolidated into 3 collections, [add]
-// files that are missing from the remote, [remove] files that are missing from 
-// the local, and [update] files that have changed. Modifications are evaluated 
-// by comparing the file sizes and timestamps.
+// Step 2 - collect:
+// Both the local and remote directory trees are walked to create a complete
+// list of files. The results are stored in local[], and remote[].
 //
-// Step 3 - commit:
-// Finally, the files from the 3 lists (ie add, remove, update) are pushed to
-// the remote. 
+// Step 3 - consolidate:
+// The remote and local file lists are compared for differences. The results
+// of the comparison are stored in add[], update[], and remove[].
 //
-// Step 4 - verify:
-// Verify the changes to ensure all commits are done.
+// Step 4 - commit:
+// The files from the 3 lists (ie add, remove, update) are processed and
+// committed to the remote.
+//
+// Step 5 - verify:
+// The collect and consolidate steps are repeted to verify that all of the
+// changes were applied successfully.
 //
 // TODO:
-// - add file size comparision to isModified
-// - fix time comparison on isModified
-// - fix timeSync() to work with upload()
-// - add upload() function
-// - add add() function
-// - add update() function
-// - add delete() function
 // - add touch() function
+// - finish implementing timeSync()
+// - fix time comparison on isModified
+// - add delete() function
+// - add verify() function
 
 // Setup
 // ----------------------------------------------------------------------------
@@ -35,16 +34,18 @@ var jsftp = require('jsftp');
 var async = require('async');
 var config = require('./config.json');
 
-var localRoot = config.local;
-var remoteRoot = config.remote;
-var ignore = config.ignore;
-
 var ftp = new jsftp({
   host: config.host,
   port: config.port,
   user: config.user,
   pass: config.pass,
 });
+
+var uploadLimit = 1;
+
+var localRoot = config.local;
+var remoteRoot = config.remote;
+var ignore = config.ignore;
 
 var remote = [];
 var local = [];
@@ -57,8 +58,13 @@ var rtimeOffset;
 
 // process functions
 // ----------------------------------------------------------------------------
+function setup(callback) {
+  return;
+}
+
 function collect(callback) {
-  console.log('Collecting...');
+  console.log('Collecting');
+  console.log('-------------------------------------------------------------');
   async.series([
     function(callback) { 
       walkLocal(localRoot, callback);
@@ -80,6 +86,7 @@ function collect(callback) {
 
 function walkLocal(dir, callback) {
   var results = [];
+  // walk the directory
   fs.readdir(dir, function(err, list) {
     if (err) return callback(err);
     var i = 0;
@@ -92,12 +99,12 @@ function walkLocal(dir, callback) {
         next();
         return;
       }
-      // get file name & stats
-      file = dir + '/' + file;
-      fs.stat(file, function(err, stat) {
+      // get file/dir name/stats
+      var path = dir + '/' + file;
+      fs.stat(path, function(err, stat) {
         // handle directories
         if (stat.isDirectory()) {
-          walkLocal(file, function(err, res) {
+          walkLocal(path, function(err, res) { // recurse & shit
             results = results.concat(res);
             next();
           });
@@ -106,7 +113,7 @@ function walkLocal(dir, callback) {
         // handle files
         if (stat.isFile()) {
           results.push({
-            'id':trimRoot(localRoot, file),
+            'id':trimRoot(localRoot, path),
             'size':stat.size,
             'time':new Date(stat.ctime)
           });
@@ -122,6 +129,7 @@ function walkLocal(dir, callback) {
 
 function walkRemote(dir, callback) {
   var results = [];
+  // walk the directory
   ftp.ls(dir, function(err, list) {
     if (err) return callback(err);
     var i = 0;
@@ -134,11 +142,11 @@ function walkRemote(dir, callback) {
         next();
         return;
       }
-      // get file name & stats
+      // get file/dir name/stats
       var path = dir + '/' + file.name;
       // handle directories
       if (file.type == 1) {
-        walkRemote(path, function(err, res) {
+        walkRemote(path, function(err, res) { // recurse & shit
           results = results.concat(res);
           next();
         });
@@ -148,69 +156,120 @@ function walkRemote(dir, callback) {
       if (file.type = 2) {
         results.push({
           'id':trimRoot(remoteRoot, path),
-          'size':file.size,
+          'size':+file.size,
           'time':new Date(file.time)
         });
         next();
         return;
       }
-      // skip everything else
+      // skip everything else (ex sumlinks)
       else { next(); }
     })();
   });
 }
 
 function consolidate(callback) {
+  console.log('Consolidating');
+  console.log('-------------------------------------------------------------');
   // create lookup tebles for easy comparison
-  var remoteID = lookupTable(remote);
-  var localID = lookupTable(local);
+  var rFiles = lookupTable(remote);
+  var lFiles = lookupTable(local);
   // run the comparison
-  remoteID.forEach(function(file) {
-    var localIDX = localID.indexOf(file); 
-    if (localIDX != -1) {
-      var remoteIDX = remoteID.indexOf(file);
-      update.push({'id':file, 'ltime':local[localIDX].time, 'rtime':remote[remoteIDX].time});
+  rFiles.forEach(function(file) {
+    var lIDX = lFiles.indexOf(file);
+    if (lIDX != -1) {
+      var rIDX = rFiles.indexOf(file);
+      var lFile = local[lIDX];
+      var rFile = remote[rIDX];
+      if (isDifferent(local[lIDX], remote[rIDX])) {
+        update.push(file);
+      }
       // mark matches for removal
-      localID[localIDX] = '';
-      remoteID[remoteIDX] = '';
+      lFiles[lIDX] = '';
+      rFiles[rIDX] = '';
     }
   });
   // remove matches from local and remote tables
-  remoteID.forEach(function(file) {
+  rFiles.forEach(function(file) {
     if(file === '') { return; }
     remove.push(file);
   });
-  localID.forEach(function(file) {
+  lFiles.forEach(function(file) {
     if(file === '') { return; }
     add.push(file);
   });
 
+  // output the results
   console.log('Updates:');
   console.log(prettyPrint(update));
   console.log('Add:');
   console.log(prettyPrint(add));
   console.log('Remove:');
   console.log(prettyPrint(remove));
-  //var lastEntry = update[update.length - 1];
-  //syncTime(lastEntry.ltime, lastEntry.rtime);
-  //isModified(lastEntry.ltime, lastEntry.rtime);
 
   callback(null, 'consolidation complete');
 }
 
 function commit(callback) {
-  add('./test/file.txt');
-  return;
+  console.log('Committing');
+  console.log('-------------------------------------------------------------');
+  async.series([
+    function(callback) {
+      if (add.length == 0) { callback(null, 'no additions'); return; }
+      async.mapLimit(add, uploadLimit, upload, function (err) {
+        if (err) {
+          callback(err, 'additions failed');
+        }
+        else {
+          callback(null, 'additions complete');
+        }
+      });
+    },
+    function(callback) {
+      if (update.length == 0) { callback(null, 'no updates'); return; }
+      async.mapLimit(update, uploadLimit, upload, function (err) {
+        if (err) {
+          callback(err, 'updates failed');
+        }
+        else {
+          callback(null, 'updates complete');
+        }
+      });
+    },
+    function(callback) {
+      if (remove.length == 0) { callback(null, 'no removals'); return; }
+      // TODO: add stuff here
+      callback(null, 'removals complete');
+    }
+  ],
+  function(err, results) {
+    console.log(results);
+    callback(null, 'commit complete');
+  });
 }
 
-function add(file, callback) {
-  var dirs = file.split('/');
-  ftp.cwd(remoteRoot);
-  console.log(ftp.ls);
-}
-
-function update(file, callback) {
-  return;
+// upload a file to the remote server
+function upload(file, callback) {
+  var local = localRoot + file;
+  var remote = remoteRoot + file;
+  fs.readFile(local, function(err, buffer) {
+    if(err) {
+      console.error(err);
+      callback(err);
+    }
+    else {
+      ftp.put(buffer, remote, function(err) {
+        if (err) {
+          console.error(err);
+          callback(err);
+        }
+        else {
+          console.log(file + " - uploaded successfuly");
+          callback();
+        }
+      });
+    }
+  });
 }
 
 function remove(file, callback) {
@@ -222,6 +281,7 @@ function remove(file, callback) {
 
 // maps a file lookup table from an array of file objects
 function lookupTable(array) {
+  //if (!array) { return []; }
   var lookup = [];
   for (var i = 0, len = array.length; i < len; i++) {
     lookup[i] = array[i].id;
@@ -234,18 +294,23 @@ function prettyPrint(results) {
   return JSON.stringify(results, null, '\t');
 }
 
+// compare local vs remote file sizes
+function isDifferent(lfile, rfile) {
+  return (lfile.size != rfile.size);
+}
+
 // compare a local vs remote file for modification 
-function isModified(ltime, rtime) {
+function isModified(lfile, rfile) {
   // round to the nearest minute
-  var minutes = 1000 * 60;
-  var hours = 1000 * 60 * 60;
+  //var minutes = 1000 * 60;
+  //var hours = 1000 * 60 * 60;
   //var ltime = new Date(((Math.round(ltime / minutes) * minutes) - (ltimeOffset * hours)));
   //var rtime = new Date(((Math.round(rtime / minutes) * minutes) - (rtimeOffset * hours)));
-  var ltime = new Date(Math.round(ltime / minutes) * minutes);
-  var rtime = new Date(Math.round(rtime / minutes) * minutes);
-  console.log('Compare:');
-  console.log('lTime: ' + ltime);
-  console.log('rTime: ' + rtime);
+  //var ltime = new Date(Math.round(ltime / minutes) * minutes);
+  //var rtime = new Date(Math.round(rtime / minutes) * minutes);
+  //console.log('Compare:');
+  //console.log('lTime: ' + ltime);
+  //console.log('rTime: ' + rtime);
 }
 
 // synchronizes the local and remote clocks
@@ -276,15 +341,11 @@ function trimRoot(root, file) {
   return '/' + fdirs.splice((rdirs.length), (fdirs.length-rdirs.length)).join('/');
 }
 
-function upload() {
-  return;
-}
-
 // init
 // ----------------------------------------------------------------------------
 async.series([
   //function(callback) {
-  //  console.log(trimBase("c:/this/is/some/shit", 'c:/this/is/some/shit/test/test.txt'));
+  //  upload('/certifications_1.png');
   //}
   function(callback) {
     collect(callback);
@@ -292,9 +353,9 @@ async.series([
   function(callback) {
     consolidate(callback);
   },
-  //function(callback) {
-  //  commit(callback);
-  //}
+  function(callback) {
+    commit(callback);
+  }
 ], 
 function(err, results) {
   if (!err) {
