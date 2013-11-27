@@ -344,9 +344,6 @@ function trimRoot(root, file) {
 // init
 // ----------------------------------------------------------------------------
 async.series([
-  //function(callback) {
-  //  upload('/certifications_1.png');
-  //}
   function(callback) {
     collect(callback);
   },
