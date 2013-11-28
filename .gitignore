@@ -1,5 +1,7 @@
+.gitignore
 .DS_Store
 Thumbs.db
 node_modules
 config.json
 ftpsync.log
+cleanup.bat
