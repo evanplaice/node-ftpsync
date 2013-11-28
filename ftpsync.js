@@ -23,7 +23,7 @@ var ftp = new jsftp({
   pass: config.pass,
 });
 
-var uploadLimit = 1;
+var maxConnections = 1;
 
 var localRoot = config.local;
 var remoteRoot = config.remote;
@@ -198,7 +198,7 @@ function commit(callback) {
   async.series([
     function(callback) {
       if (add.length == 0) { callback(null, 'no additions'); return; }
-      async.mapLimit(add, uploadLimit, upload, function (err) {
+      async.mapLimit(add, maxConnections, upload, function (err) {
         if (err) {
           callback(err, 'additions failed');
         }
@@ -209,7 +209,7 @@ function commit(callback) {
     },
     function(callback) {
       if (update.length == 0) { callback(null, 'no updates'); return; }
-      async.mapLimit(update, uploadLimit, upload, function (err) {
+      async.mapLimit(update, maxConnections, upload, function (err) {
         if (err) {
           callback(err, 'updates failed');
         }
