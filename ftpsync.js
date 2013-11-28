@@ -16,18 +16,25 @@ var jsftp = require('jsftp');
 var async = require('async');
 var config = require('./config.json');
 
+var settings {
+  'host': config.host,
+  'port': config.port,
+  'user': config.user,
+  'pass': config.pass,
+  'local': config.local,
+  'remote': config.remote,
+  'ignore': config.ignore,
+  'maxConnections': 1,
+  'ltimeOffset': 0,
+  'rtimeOffset': 0
+}
+
 var ftp = new jsftp({
-  host: config.host,
-  port: config.port,
-  user: config.user,
-  pass: config.pass,
+  host: settings.host,
+  port: settings.port,
+  user: settings.user,
+  pass: settings.pass
 });
-
-var maxConnections = 1;
-
-var localRoot = config.local;
-var remoteRoot = config.remote;
-var ignore = config.ignore;
 
 var remote = [];
 var local = [];
@@ -49,10 +56,10 @@ function collect(callback) {
   console.log('-------------------------------------------------------------');
   async.series([
     function(callback) { 
-      walkLocal(localRoot, callback);
+      walkLocal(settings.local, callback);
     },
     function(callback) {
-      walkRemote(remoteRoot, callback);
+      walkRemote(settings.remote, callback);
     }
   ], function(err, results) {
     local = results[0];
@@ -77,7 +84,7 @@ function walkLocal(dir, callback) {
       // exit if all files are processed
       if (!file) return callback(null, results);
       // skip ignore files
-      if (ignore.indexOf(file) != -1) { 
+      if (settings.ignore.indexOf(file) != -1) {
         next();
         return;
       }
@@ -95,7 +102,7 @@ function walkLocal(dir, callback) {
         // handle files
         if (stat.isFile()) {
           results.push({
-            'id':trimRoot(localRoot, path),
+            'id':trimRoot(settings.local, path),
             'size':stat.size,
             'time':new Date(stat.ctime)
           });
@@ -120,7 +127,7 @@ function walkRemote(dir, callback) {
       // exit if all files are processed
       if (!file) return callback(null, results);
       // skip ignore files
-      if (ignore.indexOf(file.name) != -1) { 
+      if (settings.ignore.indexOf(file.name) != -1) {
         next();
         return;
       }
@@ -137,7 +144,7 @@ function walkRemote(dir, callback) {
       // handle files
       if (file.type = 2) {
         results.push({
-          'id':trimRoot(remoteRoot, path),
+          'id':trimRoot(settings.remote, path),
           'size':+file.size,
           'time':new Date(file.time)
         });
@@ -198,7 +205,7 @@ function commit(callback) {
   async.series([
     function(callback) {
       if (add.length == 0) { callback(null, 'no additions'); return; }
-      async.mapLimit(add, maxConnections, upload, function (err) {
+      async.mapLimit(add, settings.maxConnections, upload, function (err) {
         if (err) {
           callback(err, 'additions failed');
         }
@@ -209,7 +216,7 @@ function commit(callback) {
     },
     function(callback) {
       if (update.length == 0) { callback(null, 'no updates'); return; }
-      async.mapLimit(update, maxConnections, upload, function (err) {
+      async.mapLimit(update, settings.maxConnections, upload, function (err) {
         if (err) {
           callback(err, 'updates failed');
         }
@@ -232,8 +239,8 @@ function commit(callback) {
 
 // upload a file to the remote server
 function upload(file, callback) {
-  var local = localRoot + file;
-  var remote = remoteRoot + file;
+  var local = settings.local + file;
+  var remote = settings.remote + file;
   fs.readFile(local, function(err, buffer) {
     if(err) {
       console.error(err);
