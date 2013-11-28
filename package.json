@@ -28,7 +28,8 @@
   "dependencies": {
     "async": ">=0.2.9",
     "jsftp": ">=1.1.1",
-    "touch": ">=0.0.2"
+    "touch": ">=0.0.2",
+    "commander": ">=2.1.0"
   },
   "repository" : {
     "type": "git",
