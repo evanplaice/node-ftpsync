@@ -1,6 +1,5 @@
 {
   "name": "ftpsync",
-  "preferGlobal": true,
   "version": "0.1.0",
   "description": "Intelligent file syncronization over FTP",
   "homepage": "http://github.com/evanplaice/node-ftpsync",
@@ -31,6 +30,15 @@
     "jsftp": ">=1.1.1",
     "touch": ">=0.0.2"
   },
-  "repository" : { "type": "git", "url": "http://github.com/evanplaice/node-ftpsync.git" },
-  "keywords": [ "ftp", "client", "transfer","sync","synchronise"],
+  "repository" : {
+    "type": "git",
+    "url": "http://github.com/evanplaice/node-ftpsync.git"
+  },
+  "keywords": [
+    "ftp",
+    "client",
+    "transfer",
+    "sync",
+    "synchronise"
+    ]
 }
