@@ -1,25 +1,7 @@
 // Design Notes
 // ----------------------------------------------------------------------------
-// Step 1 - setup:
-// Calculate the local and remote timezone offsets to sync the clocks.
-//
-// Step 2 - collect:
-// Both the local and remote directory trees are walked to create a complete
-// list of files. The results are stored in local[], and remote[].
-//
-// Step 3 - consolidate:
-// The remote and local file lists are compared for differences. The results
-// of the comparison are stored in add[], update[], and remove[].
-//
-// Step 4 - commit:
-// The files from the 3 lists (ie add, remove, update) are processed and
-// committed to the remote.
-//
-// Step 5 - verify:
-// The collect and consolidate steps are repeted to verify that all of the
-// changes were applied successfully.
-//
 // TODO:
+// - prepare for export
 // - add touch() function
 // - finish implementing timeSync()
 // - fix time comparison on isModified
