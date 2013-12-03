@@ -12,7 +12,6 @@ Create a configuration file
 
 *config.json*
 ```javascript
-
 {
   "local":"~/www/",
   "remote":"/",
