@@ -16,7 +16,7 @@ var jsftp = require('jsftp');
 var async = require('async');
 var config = require('./config.json');
 
-var settings {
+var settings = {
   'host': config.host,
   'port': config.port,
   'user': config.user,
