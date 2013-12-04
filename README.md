@@ -5,13 +5,39 @@ An FTP synchronization app for NodeJS based on [jsftp](https://npmjs.org/package
 
 **Warning: This app is currently in the early alpha stages of development. Feel free to try it out and contribute fixes/feedback but it would be wise to wait a few releases before using it in a production environment.**
 
-Getting Started
+Usage
+----------------
+
+```js
+$ node ftpsync --help
+
+ Usage: ftpsync [options]
+
+ Options:
+
+   -h, --help            output usage information
+   -V, --version         output the version number
+   -v, --verbose         Verbose logging
+   -l, --local []        Local root path
+   -r, --remote []       Remote root path
+   -h, --host []         FTP host name/address
+   -p, --port <>         FTP connection port
+   -u, --user []         FTP user name
+   -s, --pass []         FTP password
+   -c, --connections <>  Max number of concurrent FTP connections
+   -i, --ignore <items>  List of files to ignore (separated by commas)
+
+```
+
+Using a config file
 --------------
 
-Create a configuration file
+As an alternative to the traditional command line interface a config file may also be used to load the settings.
+
+#### Step 1 - Create a configuration file
 
 *config.json*
-```javascript
+```js
 {
   "local":"~/www/",
   "remote":"/",
@@ -19,6 +45,7 @@ Create a configuration file
   "port":21,
   "user":"username",
   "pass":"password",
+  "connection":"2",
   "ignore":[
     ".htaccess"
   ]
@@ -27,17 +54,19 @@ Create a configuration file
 
 *See [ftpsync.settings{}](#ftpsyncsettings) for detailed info about the settings.*
 
-Just put the config.json file in the same folder as ftpsync.js and run the sync.
+#### Step 2 - Place the config file in the directory where ftpsync will be exectued
 
-`npm ftpsync.js`
+*By default ftpsync will use the configuration supplied buy a config.json file located in the CWD.*
 
-If you'd like to see the output simply pipe the console to a log file.
+#### Step 3 - Run the script
+
+`node ftpsync.js`
+
+#### Optional - Logging to a file
+
+To log the output to a file simply pipe STDOUT to a log file.
+
 `npm ftpsync.js > ftpsync.log &`
-
-Usage
-----------------
-
-A universal bin file is currently under development.
 
 API
 ----------------
@@ -60,31 +89,35 @@ Contains the application settings for ftpsync.
   - `pass` - ftp password (required).
   - `localRoot` - the root directory of the local host (default `'./'`).
   - `remoteRoot` - the root path of the remote server (default `'./'`).
-  - `maxConnections` - the max number of concurrent ftp connections (default `1`).
+  - `connections` - the max number of concurrent ftp connections (default `1`).
   - `lTimeOffset` - the local hosts timezone offset (autodetected). 
   - `rTimeOffset` - the remoge ftp server's timezone offset (autodetected).
 
 #### ftpsync.local[]
 
-The file listing for the local host. Populated by running `ftpsync.collect()`.
+The file listing for the local host. Populated by running `collect()`.
 
 #### ftpsync.remote[]
 
-The file listing for the remote server. Populated by running `ftpsync.collect()`.
+The file listing for the remote server. Populated by running `collect()`.
 
 #### ftpsync.add[]
 
-The list of files queued to for addition to the remote server. Populated by running `ftpsync.consolidate()`.
+The list of files queued to for addition to the remote server. Populated by running `consolidate()`.
 
 #### ftpsync.update[]
 
-The list of files queued for update on the remote server. Populated by running `ftpsync.consolidate()`.
+The list of files queued for update on the remote server. Populated by running `consolidate()`.
 
 #### ftpsync.remove[]
 
-The list of files queued for removal from the remote server. Populated by running `ftpsync.consolidate()`.
+The list of files queued for removal from the remote server. Populated by running `consolidate()`.
 
 ### Methods
+
+#### ftpsync.run(callback)
+
+Completes the full synchronization from start to finish. Runs `setup()`, `collect()`, `consolidate()`, `commit()`, and `validate()`.
 
 #### ftpsync.setup(callback)
 
@@ -101,25 +134,29 @@ The initialization step of the sunchronization process. This function accomplish
 
 #### ftpsync.collect(callback)
 
-Walks the file trees for both the local host and remote server and prepares them for further processing. The resulting file lists are stored in `ftpsync.local[]`, and `ftpsync.remote[]` upon successful completion.
+Walks the file trees for both the local host and remote server and prepares them for further processing. The resulting file lists are stored in `local[]`, and `remote[]` upon successful completion.
 
 #### ftpsync.consolidate(callback)
 
-Runs comparisons on the local and remote file listings. Files that exist in the local directory are but not the remote are queued up for addition. Files that exist in both but are different (determined by file size and time stamp) are queued for update. Files that exist in on the remote directory but not the local are queued for removal. The resulting queues can be found in `ftpsync.add[]`, `ftpsync.update[]`, and `ftpsync.remove[]` upon successful completion.
+Runs comparisons on the local and remote file listings. Files that exist in the local directory are but not the remote are queued up for addition. Files that exist in both but are different (determined by file size and time stamp) are queued for update. Files that exist in on the remote directory but not the local are queued for removal. The resulting queues can be found in `add[]`, `update[]`, and `remove[]` upon successful completion.
 
 #### ftpsync.commit(callback)
 
-Executes the tasks contained in the `ftpsync.add[]`, `ftpsync.update[]`, and `ftpsync.remove[]` lists.
+Executes the tasks contained in the `add[]`, `update[]`, and `remove[]` lists.
 
 ### Helper Methods
 
-#### ftpsync.walkLocal(dir, callback)
+#### ftpsync.utils.walkLocal(dir, callback)
 
 Walks the local directory tree and returns a list of files.
 
-#### ftpsync.walkRemote(dir, callback)
+*Requires `setup()` to be run first.*
+
+#### ftpsync.utils.walkRemote(dir, callback)
 
 Walks the remote directory tree and returns a list of files.
+
+*Requires `setup()` to be run first.*
 
 Installation
 ------------
