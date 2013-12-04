@@ -163,7 +163,9 @@ Walks the remote directory tree and returns a list of files.
 Installation
 ------------
 
-    npm install ftpsync
+    npm install -g ftpsync
+
+*The -g flag indicates that this package will be installed globally. If you'd like to install it directly to a file locally simply remove the flag.*
 
 License
 -------
