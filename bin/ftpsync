@@ -26,7 +26,7 @@ if (program.host) { ftpsync.settings.host = program.host; }
 if (program.port) { ftpsync.settings.port = program.port; }
 if (program.user) { ftpsync.settings.user = program.user; }
 if (program.pass) { ftpsync.settings.pass = program.pass; }
-if (program.connections) { ftpsync.settings.maxConnections = program.connections; }
+if (program.connections) { ftpsync.settings.connections = program.connections; }
 if (program.ignore) { ftpsync.settings.ignore = program.ignore; }
 
 ftpsync.run();
