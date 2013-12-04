@@ -29,6 +29,8 @@ $ node ftpsync --help
 
 ```
 
+*See [ftpsync.settings{}](#ftpsyncsettings) for detailed info about the settings.*
+
 Using a config file
 --------------
 
@@ -60,13 +62,13 @@ As an alternative to the traditional command line interface a config file may al
 
 #### Step 3 - Run the script
 
-`node ftpsync.js`
+`node ftpsync`
 
 #### Optional - Logging to a file
 
 To log the output to a file simply pipe STDOUT to a log file.
 
-`npm ftpsync.js > ftpsync.log &`
+`npm ftpsync > ftpsync.log &`
 
 API
 ----------------
