@@ -14,7 +14,9 @@
       "url": "https://github.com/evanplaice/grunt-ftp-deploy/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "ftpsync.js",
+  "main": "lib/ftpsync.js",
+  "bin":"bin/ftpsync",
+  "preferGlobal":true,
   "repository": {
     "type": "git",
     "url": "git://github.com/evanplaice/node-ftpsync.git"
