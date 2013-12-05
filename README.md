@@ -9,7 +9,7 @@ Usage
 ----------------
 
 ```js
-$ node ftpsync --help
+$ ftpsync --help
 
  Usage: ftpsync [options]
 
@@ -47,7 +47,7 @@ As an alternative to the traditional command line interface a config file may al
   "port":21,
   "user":"username",
   "pass":"password",
-  "connection":"2",
+  "connections":"2",
   "ignore":[
     ".htaccess"
   ]
@@ -62,13 +62,13 @@ As an alternative to the traditional command line interface a config file may al
 
 #### Step 3 - Run the script
 
-`node ftpsync`
+`ftpsync`
 
 #### Optional - Logging to a file
 
 To log the output to a file simply pipe STDOUT to a log file.
 
-`npm ftpsync > ftpsync.log &`
+`ftpsync > ftpsync.log &`
 
 API
 ----------------
@@ -170,4 +170,4 @@ Installation
 License
 -------
 
-See LICENSE.
+MIT. See LICENSE.
