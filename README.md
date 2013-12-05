@@ -95,25 +95,63 @@ Contains the application settings for ftpsync.
   - `lTimeOffset` - the local hosts timezone offset (autodetected). 
   - `rTimeOffset` - the remoge ftp server's timezone offset (autodetected).
 
-#### ftpsync.local[]
+#### ftpsync.local{}
 
-The file listing for the local host. Populated by running `collect()`.
+The file and directory listings for the local host.
+
+- `ftpsync.local.dirs` - contains a simple list.
+
+Each path represents a local directory.
+
+- `ftpsync.local.files` - contains a list of objects.
+
+Each object in the list represents a file and contains a `id`, `size`, and `time` attribute with the requisite values for that file.
+
+Populated by running `collect()` or `utils.walkLocal()`.
 
 #### ftpsync.remote[]
 
-The file listing for the remote server. Populated by running `collect()`.
+The file and directory listings for the remote host.
+
+- `ftpsync.remote.dirs` - contains a simple list.
+
+Each path represents a remote directory.
+
+- `ftpsync.remote.files` - contains a list of objects.
+
+Each object in the list represents a file and contains a `id`, `size`, and `time` attribute with the requisite values for that file.
+
+Populated by running `collect()` or `utils.walkremote()`.
+
+#### ftpsync.mkdir[]
+
+The list of directories queued for creation on the remote server.
+
+Populated by running `consolidate()`.
+
+#### ftpsync.rmdir[]
+
+The list of directories queued for deletion on the remote server.
+
+Populated by running `consolidate()`.
 
 #### ftpsync.add[]
 
-The list of files queued to for addition to the remote server. Populated by running `consolidate()`.
+The list of files queued to for addition to the remote server.
+
+Populated by running `consolidate()`.
 
 #### ftpsync.update[]
 
-The list of files queued for update on the remote server. Populated by running `consolidate()`.
+The list of files queued for update on the remote server.
+
+Populated by running `consolidate()`.
 
 #### ftpsync.remove[]
 
-The list of files queued for removal from the remote server. Populated by running `consolidate()`.
+The list of files queued for removal from the remote server.
+
+Populated by running `consolidate()`.
 
 ### Methods
 
