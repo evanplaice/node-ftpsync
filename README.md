@@ -3,7 +3,7 @@ An FTP synchronization app for NodeJS based on [jsftp](https://npmjs.org/package
 [![NPM](https://nodei.co/npm/ftpsync.png)](https://nodei.co/npm/ftpsync/)
 
 
-**Warning: This app is currently in the early alpha stages of development. Feel free to try it out and contribute fixes/feedback but it would be wise to wait a few releases before using it in a production environment.**
+**Notice: The core functionality to push files to a remote server is now fully implemented. Until the timestamp comparison logic is worked out, updates (ie overwriting files) are determined solely by comparing file sizes. This is not ftp-deploy. This application will delete files and directories on the remote server to match the local machine. Until some limitation of jsftp are worked out, concurrent connections are hard-limited to 1. Use this application in production at your own risk.**
 
 Usage
 ----------------
@@ -204,6 +204,22 @@ Installation
     npm install -g ftpsync
 
 *The -g flag indicates that this package will be installed globally. If you'd like to install it directly to a file locally simply remove the flag.*
+
+Roadmap
+-------
+### Short Term
+ - Implement timestamp file comparisons on updates
+ - Improve error handling
+ - Improve logging
+ - Enable multiple concurrent uploads
+ - Implement glob matching on ignore files
+
+### Long Term
+ - Pull functionality
+ - Two-way sync
+
+### Pipe Dream
+ - Comprehensive testing - Requires a non-sucky ftp server implementation written in node.
 
 License
 -------
