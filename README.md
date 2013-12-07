@@ -109,7 +109,7 @@ Each object in the list represents a file and contains a `id`, `size`, and `time
 
 Populated by running `collect()` or `utils.walkLocal()`.
 
-#### ftpsync.remote[]
+#### ftpsync.remote{}
 
 The file and directory listings for the remote host.
 
