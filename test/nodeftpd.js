@@ -7,8 +7,8 @@ var listenPort = process.env.PORT || 9999;
 var server = new ftpd.FtpServer(process.env.IP || "127.0.0.1", {
     getInitialCwd: function () { return path.normalize("/"); },
     getRoot: function () { return path.normalize(process.cwd() + '/remote'); },
-    pasvPortRangeStart: 1025,
-    pasvPortRangeEnd: 1050,
+    pasvPortRangeStart: 1000,
+    pasvPortRangeEnd: 2000,
     useWriteFile: false,
     useReadFile: false,
     uploadMaxSlurpSize: 7000

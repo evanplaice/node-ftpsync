@@ -9,7 +9,7 @@ var config = {
 	"port":9999,
 	"user":"anonymous",
 	"pass":"",
-	"connections":2,
+	"connections":1,
 	"ignore":[
 		".htaccess"
 	]
