@@ -3,7 +3,7 @@
 var ftpsync = require('../lib/ftpsync.js');
 
 var config = {
-	"local":"C:/Users/eplaice/Desktop/node-ftpsync/test/local",
+	"local":process.cwd() + "/local",
 	"remote":"/",
 	"host":"127.0.0.1",
 	"port":9999,
