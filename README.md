@@ -92,8 +92,9 @@ Contains the application settings for ftpsync.
   - `localRoot` - the root directory of the local host (default `'./'`).
   - `remoteRoot` - the root path of the remote server (default `'./'`).
   - `connections` - the max number of concurrent ftp connections (default `1`).
-  - `lTimeOffset` - the local hosts timezone offset (autodetected). 
-  - `rTimeOffset` - the remoge ftp server's timezone offset (autodetected).
+  - `ignore` - the list of file patterns to ignore.
+
+*Note: Ignore patterns can be defined as a filename, file path, or glob match.*
 
 #### ftpsync.local{}
 
@@ -209,9 +210,7 @@ Roadmap
 -------
 ### Short Term
  - Implement timestamp file comparisons on updates
- - Improve error handling
  - Improve logging
- - Implement glob matching on ignore files
 
 ### Long Term
  - Pull functionality
