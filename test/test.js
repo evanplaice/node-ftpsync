@@ -1,39 +1,27 @@
-var ftpd = require('../node_modules/nodeftpd');
-var fs = require('fs');
-var path = require('path');
+#!/usr/bin/env node
 
-var listenPort = process.env.PORT || 9999;
+var ftpsync = require('../lib/ftpsync.js');
 
-var server = new ftpd.FtpServer(process.env.IP || "127.0.0.1", {
-    getInitialCwd: function () { return path.normalize("/"); },
-    getRoot: function () { return path.normalize(process.cwd() + '/remote'); },
-    pasvPortRangeStart: 1025,
-    pasvPortRangeEnd: 1050,
-    useWriteFile: false,
-    useReadFile: false,
-    uploadMaxSlurpSize: 7000
-});
+var config = {
+	"local":"C:/Users/eplaice/Desktop/node-ftpsync/test/local",
+	"remote":"/",
+	"host":"127.0.0.1",
+	"port":9999,
+	"user":"anonymous",
+	"pass":"",
+	"connections":2,
+	"ignore":[
+		".htaccess"
+	]
+};
 
-server.on('error', function (err) {
-    console.log("FTP Server error:", err);
-});
+ftpsync.settings.local = config.local;
+ftpsync.settings.remote = config.remote;
+ftpsync.settings.host = config.host;
+ftpsync.settings.port = config.port;
+ftpsync.settings.user = config.user;
+ftpsync.settings.pass = config.pass;
+ftpsync.settings.connections = config.connections;
+ftpsync.settings.ignore = config.ignore;
 
-server.on("client:connected", function(conn) {
-    var username = null;
-    console.log("client connected: " + conn.remoteAddress);
-    conn.on("command:user", function(user, success, failure) {
-        if (user) {
-            username = user;
-            success();
-        } else failure();
-    });
-
-    conn.on("command:pass", function(pass, success, failure) {
-        if (pass) success(username);
-        else failure();
-    });
-});
-server.debugging = 4;
-server.listen(listenPort);
-
-console.log("Listening on port " + listenPort);
+ftpsync.run();
