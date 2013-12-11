@@ -9,7 +9,7 @@ function list(val) {
 }
 
 program.version(packInfo.version);
-program.option('-v, --verbose', 'Verbose logging', '');
+program.option('-v, --verbose', 'Verbose logging');
 program.option('-l, --local []', 'Local root path', '');
 program.option('-r, --remote []', 'Remote root path', '');
 program.option('-h, --host []', 'FTP host name/address', '');
@@ -28,5 +28,6 @@ if (program.user) { ftpsync.settings.user = program.user; }
 if (program.pass) { ftpsync.settings.pass = program.pass; }
 if (program.connections) { ftpsync.settings.connections = program.connections; }
 if (program.ignore) { ftpsync.settings.ignore = program.ignore; }
+if (program.verbose) { ftpsync.log.verbose = true;}
 
 ftpsync.run();
