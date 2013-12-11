@@ -1,41 +1,38 @@
 {
   "name": "ftpsync",
-  "version": "0.1.4",
   "description": "Intelligent file syncronization over FTP",
+  "version": "0.1.4",
   "homepage": "http://github.com/evanplaice/node-ftpsync",
   "author": {
     "name": "Evan Plaice",
     "email": "evanplaice@gmail.com",
-    "url": "https://plus.google.com/u/0/112882755236529658404/about"
+    "url": "http://plus.google.com/+evanplaice"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/evanplaice/grunt-ftp-deploy/blob/master/LICENSE-MIT"
-    }
-  ],
-  "main": "lib/ftpsync.js",
-  "bin":"bin/ftpsync",
-  "preferGlobal":true,
   "repository": {
     "type": "git",
-    "url": "git://github.com/evanplaice/node-ftpsync.git"
+    "url": "http://github.com/evanplaice/node-ftpsync.git"
   },
   "bugs": {
     "url": "https://github.com/evanplaice/node-ftpsync/issues"
   },
-   "engines": {
-    "node" : ">=0.8.0"
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/evanplaice/node-ftpsync/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "lib/ftpsync.js",
+  "bin": "bin/ftpsync",
+  "preferGlobal": true,
+  "engines": {
+    "node": ">=0.8.0"
   },
   "dependencies": {
     "async": ">=0.2.9",
     "jsftp": ">=1.1.1",
     "touch": ">=0.0.2",
-    "commander": ">=2.1.0"
-  },
-  "repository" : {
-    "type": "git",
-    "url": "http://github.com/evanplaice/node-ftpsync.git"
+    "commander": ">=2.1.0",
+    "minimatch": "~0.2.12"
   },
   "keywords": [
     "ftp",
@@ -43,5 +40,5 @@
     "transfer",
     "sync",
     "synchronise"
-    ]
+  ]
 }
