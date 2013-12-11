@@ -23,5 +23,6 @@ ftpsync.settings.user = config.user;
 ftpsync.settings.pass = config.pass;
 ftpsync.settings.connections = config.connections;
 ftpsync.settings.ignore = config.ignore;
+ftpsync.log.verbose = true;
 
 ftpsync.run();
