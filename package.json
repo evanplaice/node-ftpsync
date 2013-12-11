@@ -1,7 +1,7 @@
 {
   "name": "ftpsync",
   "description": "Intelligent file syncronization over FTP",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "http://github.com/evanplaice/node-ftpsync",
   "author": {
     "name": "Evan Plaice",
