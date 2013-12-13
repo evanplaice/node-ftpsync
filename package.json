@@ -33,6 +33,7 @@
     "touch": ">=0.0.2",
     "commander": ">=2.1.0",
     "minimatch": "~0.2.12"
+    "grunt": "~0.4.2"
   },
   "keywords": [
     "ftp",
@@ -40,5 +41,10 @@
     "transfer",
     "sync",
     "synchronise"
-  ]
+  ],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-nodeunit": "~0.2.2"
+  }
 }
