@@ -4,5 +4,4 @@ node_modules
 config.json
 *.log
 cleanup.bat
-/test/local/*
-/test/remote/*
+/test/tmp/*
