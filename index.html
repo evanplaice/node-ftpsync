@@ -1,23 +1,25 @@
 <!doctype html>
-<html>
+<html lang="en" data-ng-app="ftpsyncApp">
 <head>
-<title>Single Page Application</title>
-<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+<title data-ng-bind="title">Node-FtpSync</title>
+<link href='//fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+<link href='stylesheets/main.css' rel='stylesheet' type='text/css'>
 <style>
 </style>
-<body data-ng-app="myApp">
+<body>
 
     <ul>
-      <li><a href="#/">Home</a></li>
-      <li><a href="#/services">Services</a></li>
-      <li><a href="#/clients">Clients</a></li>
+      <li><a href="/#/">Home</a></li>
+      <li><a href="/#/getting-started">Getting Started</a></li>
+      <li><a href="/#/cli-documentation">CLI Documentation</a></li>
+      <li><a href="/#/api-documentation">API Documentation</a></li>
     </ul>
     <div data-ng-view></div>
 
 
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.js"></script>
-<script src="fonts.js"></script>
-<script src="app.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.js"></script>
+<script src="scripts/fonts.js"></script>
+<script src="scripts/app.js"></script>
 </body>
 </html>
