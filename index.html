@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<title>Single Page Application</title>
+<base href="/" />
+<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+<style>
+body {
+	font-family: 'Lato', Helvetica, Arial, sans-serif;
+}
+</style>
+<body data-ng-app="myApp">
+
+    <ul>
+      <li><a href="#/">Home</a></li>
+      <li><a href="#/services">Services</a></li>
+      <li><a href="#/clients">Clients</a></li>
+    </ul>
+    <div data-ng-view></div>
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.js"></script>
+<script src="fonts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
