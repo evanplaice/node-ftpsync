@@ -1,4 +1,4 @@
-var ftpd = require('../node_modules/nodeftpd');
+var ftpd = require('../node_modules/ftpd');
 var fs = require('fs');
 var path = require('path');
 
