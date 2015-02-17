@@ -210,7 +210,6 @@ Roadmap
 -------
 ### Short Term
  - Implement timestamp file comparisons on updates
- - Improve logging
 
 ### Long Term
  - Pull functionality
