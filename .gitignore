@@ -5,3 +5,4 @@ config.json
 *.log
 cleanup.bat
 /test/tmp/*
+.idea
