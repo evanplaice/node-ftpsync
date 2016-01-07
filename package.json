@@ -1,40 +1,7 @@
 {
   "name": "ftpsync",
-  "description": "Intelligent file syncronization over FTP",
   "version": "0.1.7",
-  "homepage": "http://github.com/evanplaice/node-ftpsync",
-  "author": {
-    "name": "Evan Plaice",
-    "email": "evanplaice@gmail.com",
-    "url": "http://plus.google.com/+evanplaice"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/evanplaice/node-ftpsync.git"
-  },
-  "bugs": {
-    "url": "https://github.com/evanplaice/node-ftpsync/issues"
-  },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/evanplaice/node-ftpsync/blob/master/LICENSE-MIT"
-    }
-  ],
-  "main": "lib/ftpsync.js",
-  "bin": "bin/ftpsync",
-  "preferGlobal": true,
-  "engines": {
-    "node": ">=0.8.0"
-  },
-  "dependencies": {
-    "async": ">=0.2.9",
-    "jsftp": ">=1.1.1",
-    "touch": ">=0.0.2",
-    "commander": ">=2.1.0",
-    "minimatch": "~0.2.12",
-    "grunt": "~0.4.2"
-  },
+  "description": "Intelligent file syncronization over FTP",
   "keywords": [
     "ftp",
     "client",
@@ -42,10 +9,38 @@
     "sync",
     "synchronise"
   ],
+  "author": {
+    "name": "Evan Plaice",
+    "email": "evanplaice@gmail.com",
+    "url": "http://evanplaice.com"
+  },
+  "homepage": "http://github.com/evanplaice/node-ftpsync",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/evanplaice/node-ftpsync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/evanplaice/node-ftpsync/issues"
+  },
+  "license": "MIT",
+  "main": "lib/ftpsync.js",
+  "bin": "bin/ftpsync",
+  "preferGlobal": true,
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "async": "^1.5.1",
+    "commander": "^2.9.0",
+    "jsftp": "^1.5.3",
+    "minimatch": "^3.0.0",
+    "touch": "^1.0.0"
+  },
   "devDependencies": {
-    "nodeftpd":"git+https://github.com/addrummond/nodeftpd.git#master",
-    "grunt-contrib-jshint": "~0.7.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-nodeunit": "~0.2.2"
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.7.0",
+    "grunt-contrib-jshint": "^0.11.3",
+    "grunt-contrib-nodeunit": "^0.4.1",
+    "nodeftpd": "git+https://github.com/addrummond/nodeftpd.git#master"
   }
 }
