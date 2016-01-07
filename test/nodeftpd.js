@@ -1,4 +1,4 @@
-var ftpd = require('../node_modules/ftpd');
+var ftpd = require('ftpd');
 var fs = require('fs');
 var path = require('path');
 
@@ -7,11 +7,8 @@ var listenPort = process.env.PORT || 9999;
 var server = new ftpd.FtpServer(process.env.IP || "127.0.0.1", {
     getInitialCwd: function () { return path.normalize("/"); },
     getRoot: function () { return path.normalize(process.cwd() + '/remote'); },
-    pasvPortRangeStart: 1000,
-    pasvPortRangeEnd: 2000,
     useWriteFile: false,
-    useReadFile: false,
-    uploadMaxSlurpSize: 7000
+    useReadFile: false
 });
 
 server.on('error', function (err) {
