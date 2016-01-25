@@ -1,26 +1,359 @@
-<!doctype html>
-<html lang="en" data-ng-app="ftpsyncApp">
-<head>
-<base href="/node-ftpsync" />
-<title data-ng-bind="title">Node-FtpSync</title>
-<link href='//fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
-<link href='stylesheets/main.css' rel='stylesheet' type='text/css'>
-<style>
-</style>
-<body>
+<!DOCTYPE html>
+<html>
 
-    <ul>
-      <li><a href="/#/">Home</a></li>
-      <li><a href="/#/getting-started">Getting Started</a></li>
-      <li><a href="/#/cli-documentation">CLI Documentation</a></li>
-      <li><a href="/#/api-documentation">API Documentation</a></li>
-    </ul>
-    <div data-ng-view></div>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Node-ftpsync : Intelligent file syncronization over FTP">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Node-ftpsync</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/evanplaice/node-ftpsync">View on GitHub</a>
+
+          <h1 id="project_title">Node-ftpsync</h1>
+          <h2 id="project_tagline">Intelligent file syncronization over FTP</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/evanplaice/node-ftpsync/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/evanplaice/node-ftpsync/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>An FTP synchronization app for NodeJS based on <a href="https://npmjs.org/package/jsftp">jsftp</a>. With an emphasis on speed and simplicity ftpsync aims to fulfull your one-click file deployment needs.</p>
+
+<p><a href="https://nodei.co/npm/ftpsync/"><img src="https://nodei.co/npm/ftpsync.png" alt="NPM"></a></p>
+
+<p><strong>Notice: The core functionality to push files to a remote server is now fully implemented. Until the timestamp comparison logic is worked out, updates (ie overwriting files) are determined solely by comparing file sizes. This is not ftp-deploy. This application will delete files and directories on the remote server to match the local machine. Use this application in production at your own risk.</strong></p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
+
+<div class="highlight highlight-source-js"><pre>$ ftpsync <span class="pl-k">--</span>help
+
+ Usage<span class="pl-k">:</span> ftpsync [options]
+
+ Options<span class="pl-k">:</span>
+
+   <span class="pl-k">-</span>h, <span class="pl-k">--</span>help            output usage information
+   <span class="pl-k">-</span>V, <span class="pl-k">--</span>version         output the version number
+   <span class="pl-k">-</span>v, <span class="pl-k">--</span>verbose         Verbose logging
+   <span class="pl-k">-</span>l, <span class="pl-k">--</span>local []        Local root path
+   <span class="pl-k">-</span>r, <span class="pl-k">--</span>remote []       Remote root path
+   <span class="pl-k">-</span>h, <span class="pl-k">--</span>host []         <span class="pl-c1">FTP</span> host name<span class="pl-k">/</span>address
+   <span class="pl-k">-</span>p, <span class="pl-k">--</span>port <span class="pl-k">&lt;&gt;</span>         <span class="pl-c1">FTP</span> connection port
+   <span class="pl-k">-</span>u, <span class="pl-k">--</span>user []         <span class="pl-c1">FTP</span> user name
+   <span class="pl-k">-</span>s, <span class="pl-k">--</span>pass []         <span class="pl-c1">FTP</span> password
+   <span class="pl-k">-</span>c, <span class="pl-k">--</span>connections <span class="pl-k">&lt;&gt;</span>  Max number <span class="pl-k">of</span> concurrent <span class="pl-c1">FTP</span> connections
+   <span class="pl-k">-</span>i, <span class="pl-k">--</span>ignore <span class="pl-k">&lt;</span>items<span class="pl-k">&gt;</span>  List <span class="pl-k">of</span> files to <span class="pl-en">ignore</span> (separated by commas)
+</pre></div>
+
+<p><em>See <a href="#ftpsyncsettings">ftpsync.settings{}</a> for detailed info about the settings.</em></p>
+
+<h2>
+<a id="using-a-config-file" class="anchor" href="#using-a-config-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using a config file</h2>
+
+<p>As an alternative to the traditional command line interface a config file may also be used to load the settings.</p>
+
+<h4>
+<a id="step-1---create-a-configuration-file" class="anchor" href="#step-1---create-a-configuration-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1 - Create a configuration file</h4>
+
+<p><em>config.json</em></p>
+
+<div class="highlight highlight-source-js"><pre>{
+  <span class="pl-s"><span class="pl-pds">"</span>local<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>~/www/<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>remote<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>/<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>host<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>example.com<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>port<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-c1">21</span>,
+  <span class="pl-s"><span class="pl-pds">"</span>user<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>username<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>pass<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>connections<span class="pl-pds">"</span></span><span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>2<span class="pl-pds">"</span></span>,
+  <span class="pl-s"><span class="pl-pds">"</span>ignore<span class="pl-pds">"</span></span><span class="pl-k">:</span>[
+    <span class="pl-s"><span class="pl-pds">"</span>.htaccess<span class="pl-pds">"</span></span>
+  ]
+}</pre></div>
+
+<p><em>See <a href="#ftpsyncsettings">ftpsync.settings{}</a> for detailed info about the settings.</em></p>
+
+<h4>
+<a id="step-2---place-the-config-file-in-the-directory-where-ftpsync-will-be-exectued" class="anchor" href="#step-2---place-the-config-file-in-the-directory-where-ftpsync-will-be-exectued" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2 - Place the config file in the directory where ftpsync will be exectued</h4>
+
+<p><em>By default ftpsync will use the configuration supplied buy a config.json file located in the CWD.</em></p>
+
+<h4>
+<a id="step-3---run-the-script" class="anchor" href="#step-3---run-the-script" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3 - Run the script</h4>
+
+<p><code>ftpsync</code></p>
+
+<h4>
+<a id="optional---logging-to-a-file" class="anchor" href="#optional---logging-to-a-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Optional - Logging to a file</h4>
+
+<p>To log the output to a file simply pipe STDOUT to a log file.</p>
+
+<p><code>ftpsync &gt; ftpsync.log &amp;</code></p>
+
+<h2>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>API</h2>
+
+<h4>
+<a id="declaring-ftpsync" class="anchor" href="#declaring-ftpsync" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Declaring ftpsync</h4>
+
+<p>Basic usage example</p>
+
+<pre><code>var ftpSync = require('ftpsync');
+
+var options = {
+  host: 'localhost',
+  user: 'testuser',
+  pass: 'password',
+  local: '/your/local/directory',
+  remote: 'directoryname'
+};
+
+ftpSunc.settings = options;
+ftpSync.run(function(err, result) {
+
+  ... your code ...
+
+};
+</code></pre>
+
+<ul>
+<li>
+<code>options{}</code> an object containing settings for ftpsync.</li>
+</ul>
+
+<p><em>See <a href="#ftpsyncsettings">ftpsync.settings{}</a> for detailed info about the settings.</em></p>
+
+<h4>
+<a id="ftpsyncsettings" class="anchor" href="#ftpsyncsettings" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.settings{}</h4>
+
+<p>Contains the application settings for ftpsync.</p>
+
+<ul>
+<li>
+<code>host</code> - hostname/address of the remote ftp server (required).</li>
+<li>
+<code>port</code> - port of the remote ftp server (default <code>21</code>).</li>
+<li>
+<code>user</code> - ftp username (required).</li>
+<li>
+<code>pass</code> - ftp password (required).</li>
+<li>
+<code>local</code> - the root directory of the local host (default <code>'./'</code>).</li>
+<li>
+<code>remote</code> - the root path of the remote server (default <code>'./'</code>).</li>
+<li>
+<code>connections</code> - the max number of concurrent ftp connections (default <code>1</code>).</li>
+<li>
+<code>ignore</code> - the list of file patterns to ignore.</li>
+</ul>
+
+<p><em>Note: Ignore patterns can be defined as a filename, file path, or glob match.</em></p>
+
+<h4>
+<a id="ftpsynclocal" class="anchor" href="#ftpsynclocal" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.local{}</h4>
+
+<p>The file and directory listings for the local host.</p>
+
+<ul>
+<li>
+<code>ftpsync.local.dirs</code> - contains a simple list.</li>
+</ul>
+
+<p>Each path represents a local directory.</p>
+
+<ul>
+<li>
+<code>ftpsync.local.files</code> - contains a list of objects.</li>
+</ul>
+
+<p>Each object in the list represents a file and contains a <code>id</code>, <code>size</code>, and <code>time</code> attribute with the requisite values for that file.</p>
+
+<p>Populated by running <code>collect()</code> or <code>utils.walkLocal()</code>.</p>
+
+<h4>
+<a id="ftpsyncremote" class="anchor" href="#ftpsyncremote" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.remote{}</h4>
+
+<p>The file and directory listings for the remote host.</p>
+
+<ul>
+<li>
+<code>ftpsync.remote.dirs</code> - contains a simple list.</li>
+</ul>
+
+<p>Each path represents a remote directory.</p>
+
+<ul>
+<li>
+<code>ftpsync.remote.files</code> - contains a list of objects.</li>
+</ul>
+
+<p>Each object in the list represents a file and contains a <code>id</code>, <code>size</code>, and <code>time</code> attribute with the requisite values for that file.</p>
+
+<p>Populated by running <code>collect()</code> or <code>utils.walkremote()</code>.</p>
+
+<h4>
+<a id="ftpsyncmkdir" class="anchor" href="#ftpsyncmkdir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.mkdir[]</h4>
+
+<p>The list of directories queued for creation on the remote server.</p>
+
+<p>Populated by running <code>consolidate()</code>.</p>
+
+<h4>
+<a id="ftpsyncrmdir" class="anchor" href="#ftpsyncrmdir" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.rmdir[]</h4>
+
+<p>The list of directories queued for deletion on the remote server.</p>
+
+<p>Populated by running <code>consolidate()</code>.</p>
+
+<h4>
+<a id="ftpsyncadd" class="anchor" href="#ftpsyncadd" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.add[]</h4>
+
+<p>The list of files queued to for addition to the remote server.</p>
+
+<p>Populated by running <code>consolidate()</code>.</p>
+
+<h4>
+<a id="ftpsyncupdate" class="anchor" href="#ftpsyncupdate" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.update[]</h4>
+
+<p>The list of files queued for update on the remote server.</p>
+
+<p>Populated by running <code>consolidate()</code>.</p>
+
+<h4>
+<a id="ftpsyncremove" class="anchor" href="#ftpsyncremove" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.remove[]</h4>
+
+<p>The list of files queued for removal from the remote server.</p>
+
+<p>Populated by running <code>consolidate()</code>.</p>
+
+<h3>
+<a id="methods" class="anchor" href="#methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Methods</h3>
+
+<h4>
+<a id="ftpsyncruncallback" class="anchor" href="#ftpsyncruncallback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.run(callback)</h4>
+
+<p>Completes the full synchronization from start to finish. Runs <code>setup()</code>, <code>collect()</code>, <code>consolidate()</code>, <code>commit()</code>, and <code>validate()</code>.</p>
+
+<h4>
+<a id="ftpsyncsetupcallback" class="anchor" href="#ftpsyncsetupcallback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.setup(callback)</h4>
+
+<p>The initialization step of the sunchronization process. This function accomplishes two tasks, First, it checks to see that all the required settings are present. Second, it synchronizes the local host and remote server clocks.</p>
+
+<p><em>The setup will fail if the following settings aren't defined:</em></p>
+
+<ul>
+<li><code>host</code></li>
+<li><code>port</code></li>
+<li><code>user</code></li>
+<li><code>pass</code></li>
+</ul>
+
+<p><em>See <a href="#ftpsyncsettings">ftpsync.settings{}</a> for detailed info about the settings.</em></p>
+
+<h4>
+<a id="ftpsynccollectcallback" class="anchor" href="#ftpsynccollectcallback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.collect(callback)</h4>
+
+<p>Walks the file trees for both the local host and remote server and prepares them for further processing. The resulting file lists are stored in <code>local[]</code>, and <code>remote[]</code> upon successful completion.</p>
+
+<h4>
+<a id="ftpsyncconsolidatecallback" class="anchor" href="#ftpsyncconsolidatecallback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.consolidate(callback)</h4>
+
+<p>Runs comparisons on the local and remote file listings. Files that exist in the local directory are but not the remote are queued up for addition. Files that exist in both but are different (determined by file size and time stamp) are queued for update. Files that exist in on the remote directory but not the local are queued for removal. The resulting queues can be found in <code>add[]</code>, <code>update[]</code>, and <code>remove[]</code> upon successful completion.</p>
+
+<h4>
+<a id="ftpsynccommitcallback" class="anchor" href="#ftpsynccommitcallback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.commit(callback)</h4>
+
+<p>Executes the tasks contained in the <code>add[]</code>, <code>update[]</code>, and <code>remove[]</code> lists.</p>
+
+<h3>
+<a id="helper-methods" class="anchor" href="#helper-methods" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Helper Methods</h3>
+
+<h4>
+<a id="ftpsyncutilswalklocaldir-callback" class="anchor" href="#ftpsyncutilswalklocaldir-callback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.utils.walkLocal(dir, callback)</h4>
+
+<p>Walks the local directory tree and returns a list of files.</p>
+
+<p><em>Requires <code>setup()</code> to be run first.</em></p>
+
+<h4>
+<a id="ftpsyncutilswalkremotedir-callback" class="anchor" href="#ftpsyncutilswalkremotedir-callback" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>ftpsync.utils.walkRemote(dir, callback)</h4>
+
+<p>Walks the remote directory tree and returns a list of files.</p>
+
+<p><em>Requires <code>setup()</code> to be run first.</em></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<pre><code>npm install -g ftpsync
+</code></pre>
+
+<p><em>The -g flag indicates that this package will be installed globally. If you'd like to install it directly to a file locally simply remove the flag.</em></p>
+
+<h2>
+<a id="roadmap" class="anchor" href="#roadmap" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Roadmap</h2>
+
+<h3>
+<a id="short-term" class="anchor" href="#short-term" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Short Term</h3>
+
+<ul>
+<li>Implement timestamp file comparisons on updates</li>
+</ul>
+
+<h3>
+<a id="long-term" class="anchor" href="#long-term" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Long Term</h3>
+
+<ul>
+<li>Pull functionality</li>
+<li>Two-way sync</li>
+</ul>
+
+<h3>
+<a id="pipe-dream" class="anchor" href="#pipe-dream" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Pipe Dream</h3>
+
+<ul>
+<li>Comprehensive testing - Requires a non-sucky ftp server implementation written in node.</li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+
+<p>MIT. See LICENSE.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Node-ftpsync maintained by <a href="https://github.com/evanplaice">evanplaice</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-31069733-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
 
 
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.4/angular-route.js"></script>
-<script src="scripts/fonts.js"></script>
-<script src="scripts/app.js"></script>
-</body>
+  </body>
 </html>
