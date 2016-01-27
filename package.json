@@ -1,6 +1,6 @@
 {
   "name": "ftpsync",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Intelligent file syncronization over FTP",
   "keywords": [
     "ftp",
