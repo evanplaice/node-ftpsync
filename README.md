@@ -87,7 +87,7 @@ Basic usage example
       remote: 'directoryname'
     };
     
-    ftpSunc.settings = options;
+    ftpSync.settings = options;
     ftpSync.run(function(err, result) {
     
       ... your code ...
