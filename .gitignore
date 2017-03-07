@@ -6,3 +6,4 @@ config.json
 cleanup.bat
 /test/tmp/*
 .idea
+.vscode/*
