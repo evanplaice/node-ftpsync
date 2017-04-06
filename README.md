@@ -110,6 +110,7 @@ Contains the application settings for ftpsync.
   - `remote` - the root path of the remote server (default `'./'`).
   - `connections` - the max number of concurrent ftp connections (default `1`).
   - `ignore` - the list of file patterns to ignore.
+  - `createRemoteDir` - set to 'true' to create the remote root directory if necessary
 
 *Note: Ignore patterns can be defined as a filename, file path, or glob match.*
 
